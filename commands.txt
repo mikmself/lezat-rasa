@@ -1,0 +1,5 @@
+kafka-topics --create --topic pemesan --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics --create --topic konfirmasi-pesanan --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics --create --topic order --bootstrap-server localhost:9092 --partitions 2 --replication-factor 1
+kafka-topics --create --topic notifikasi --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+kafka-topics --create --topic pembayaran --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
