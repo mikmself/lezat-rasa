@@ -9,11 +9,39 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 
+// Menu tetap dengan 10 pilihan
+const MENU_MAKANAN = [
+  { id: 1, nama: "Nasi Goreng Spesial", harga: 28000, kategori: "Nasi" },
+  { id: 2, nama: "Mie Ayam Bakso", harga: 25000, kategori: "Mie" },
+  { id: 3, nama: "Sate Ayam (10 tusuk)", harga: 15000, kategori: "Sate" },
+  { id: 4, nama: "Ayam Goreng Crispy", harga: 22000, kategori: "Ayam" },
+  { id: 5, nama: "Ikan Gurame Goreng", harga: 35000, kategori: "Ikan" },
+  { id: 6, nama: "Es Jeruk", harga: 8000, kategori: "Minuman" },
+  { id: 7, nama: "Es Teh Manis", harga: 3000, kategori: "Minuman" },
+  { id: 8, nama: "Teh Hangat", harga: 5000, kategori: "Minuman" },
+  { id: 9, nama: "Kopi Hitam", harga: 7000, kategori: "Minuman" },
+  { id: 10, nama: "Es Campur", harga: 12000, kategori: "Minuman" }
+];
+
 // Fungsi untuk menanyakan input dengan promise
 const question = (query) => {
   return new Promise((resolve) => {
     rl.question(query, resolve);
   });
+};
+
+// Fungsi untuk menampilkan menu
+const tampilkanMenu = () => {
+  console.log("\n🍽️  === MENU RUMAH MAKAN LEZAT RASA ===");
+  console.log("ID | Menu                    | Harga    | Kategori");
+  console.log("---+-------------------------+----------+----------");
+  
+  MENU_MAKANAN.forEach(item => {
+    const nama = item.nama.padEnd(23);
+    const harga = `Rp${item.harga.toLocaleString()}`.padStart(8);
+    console.log(`${item.id.toString().padStart(2)} | ${nama} | ${harga} | ${item.kategori}`);
+  });
+  console.log("---+-------------------------+----------+----------");
 };
 
 // Fungsi untuk mengirim pesanan ke Kafka
@@ -43,19 +71,30 @@ const inputPesanan = async () => {
     const items = [];
     let lanjutTambah = true;
     
-    console.log("\n📝 Silakan masukkan menu yang dipesan:");
+    console.log("\n📝 Silakan pilih menu yang dipesan:");
+    tampilkanMenu();
     
     while (lanjutTambah) {
       console.log(`\n--- Item ke-${items.length + 1} ---`);
-      const namaMakanan = await question("🍽️  Nama Makanan/Minuman: ");
-      const jumlah = await question("🔢 Jumlah: ");
-      const hargaSatuan = await question("💰 Harga Satuan (Rp): ");
+      
+      // Pilih menu berdasarkan ID
+      const menuId = await question("🔢 Pilih ID Menu: ");
+      const selectedMenu = MENU_MAKANAN.find(item => item.id === parseInt(menuId));
+      
+      if (!selectedMenu) {
+        console.log("❌ ID menu tidak valid! Silakan pilih lagi.");
+        continue;
+      }
+      
+      const jumlah = await question(`🔢 Jumlah ${selectedMenu.nama}: `);
       
       items.push({
-        nama_makanan: namaMakanan,
+        nama_makanan: selectedMenu.nama,
         jumlah: parseInt(jumlah),
-        harga_satuan: parseInt(hargaSatuan)
+        harga_satuan: selectedMenu.harga
       });
+      
+      console.log(`✅ ${selectedMenu.nama} (${jumlah}x) ditambahkan ke pesanan`);
       
       const tambahLagi = await question("\n❓ Tambah menu lagi? (y/n): ");
       lanjutTambah = tambahLagi.toLowerCase() === 'y' || tambahLagi.toLowerCase() === 'yes';
