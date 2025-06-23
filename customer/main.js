@@ -89,6 +89,7 @@ const inputPesanan = async () => {
       const jumlah = await question(`🔢 Jumlah ${selectedMenu.nama}: `);
       
       items.push({
+        id_pesanan: uuidv4(),
         nama_makanan: selectedMenu.nama,
         jumlah: parseInt(jumlah),
         harga_satuan: selectedMenu.harga

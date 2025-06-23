@@ -105,8 +105,8 @@ const prosesPesanan = async (pesanan) => {
 // Fungsi untuk menyimpan pesanan baru ke database
 const simpanPesananBaru = async (orderData) => {
   try {
-    const { nomor_meja, items, nama_customer } = orderData;
-    const id_pesanan = uuidv4();
+    const { id_pesanan, nomor_meja, items, nama_customer } = orderData;
+    // const id_pesanan = uuidv4();
 
     // Hitung total harga
     let totalHarga = items.reduce((sum, item) => sum + (item.jumlah * item.harga_satuan), 0);
@@ -115,6 +115,12 @@ const simpanPesananBaru = async (orderData) => {
     const insertPesananSql = `
       INSERT INTO pesanan (id, nama_customer, nomor_meja, status, total_harga, tanggal)
       VALUES (?, ?, ?, ?, ?, NOW())
+      ON DUPLICATE KEY UPDATE
+      nama_customer = VALUES(nama_customer),
+      nomor_meja = VALUES(nomor_meja),
+      status = VALUES(status),
+      total_harga = VALUES(total_harga),
+      tanggal = NOW()
     `;
     await db.execute(insertPesananSql, [id_pesanan, nama_customer, nomor_meja, "Diterima Waiters", totalHarga]);
     console.log(`[Waiters] 📝 Pesanan #${id_pesanan} (Meja ${nomor_meja}) disimpan ke database`);
