@@ -90,7 +90,6 @@ const inputPesanan = async () => {
       const jumlah = await question(`🔢 Jumlah ${selectedMenu.nama}: `);
       
       items.push({
-        id_pesanan: uuidv4(),
         nama_makanan: selectedMenu.nama,
         jumlah: parseInt(jumlah),
         harga_satuan: selectedMenu.harga
@@ -104,6 +103,7 @@ const inputPesanan = async () => {
     
     // Buat objek pesanan
     const orderData = {
+      id_pesanan: uuidv4(),
       nomor_meja: parseInt(nomorMeja),
       items: items,
       nama_customer: namaCustomer
