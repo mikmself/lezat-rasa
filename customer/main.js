@@ -1,5 +1,6 @@
 import kafka from "../utils/kafkaClient.js"; // Mengimpor client Kafka
 import readline from "readline";
+import { v4 as uuidv4 } from 'uuid';
 
 const producer = kafka.producer(); // Membuat instance producer Kafka
 
